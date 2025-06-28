@@ -9,7 +9,7 @@ class Dosen extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'nidn', 'nama', 'jabatan'];
+    protected $fillable = ['user_id', 'nidn', 'nama', 'email', 'jabatan'];
 
     public function user()
     {
