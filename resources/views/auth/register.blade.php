@@ -27,10 +27,10 @@
             <h2 class="text-2xl font-bold text-center text-[#C5B358] mb-6">Register Account</h2>
 
             @if (session('status'))
-    <div class="mb-4 text-sm text-green-500">
-        {{ session('status') }}
-    </div>
-@endif
+                <div class="mb-4 text-sm text-green-500">
+                    {{ session('status') }}
+                </div>
+            @endif
 
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf
@@ -55,26 +55,6 @@
                     @enderror
                 </div>
 
-                <!-- NIM Untuk Mahasiswa -->
-                <div>
-                    <label for="nim" class="block text-[#C5B358] font-medium mb-1">NIM</label>
-                    <input id="nim" type="nim" name="nim" value="{{ old('nim') }}" required
-                           class="w-full px-4 py-2 rounded bg-[#3a1f1f] border border-gray-600 text-white focus:ring focus:ring-yellow-700 focus:outline-none">
-                    @error('nim')
-                        <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- NIK / NIDN Untuk Dosen -->
-                <div>
-                    <label for="nidn" class="block text-[#C5B358] font-medium mb-1">NIK / NIDN</label>
-                    <input id="nidn" type="nidn" name="nidn" value="{{ old('nidn') }}" required
-                           class="w-full px-4 py-2 rounded bg-[#3a1f1f] border border-gray-600 text-white focus:ring focus:ring-yellow-700 focus:outline-none">
-                    @error('nidn')
-                        <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <!-- Role -->
                 <div>
                     <label for="role" class="block text-[#C5B358] font-medium mb-1">Daftar Sebagai</label>
@@ -85,6 +65,26 @@
                         <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                     </select>
                     @error('role')
+                        <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- NIM (Mahasiswa) -->
+                <div id="nim-field" style="display: none;">
+                    <label for="nim" class="block text-[#C5B358] font-medium mb-1">NIM</label>
+                    <input id="nim" type="text" name="nim" value="{{ old('nim') }}"
+                           class="w-full px-4 py-2 rounded bg-[#3a1f1f] border border-gray-600 text-white focus:ring focus:ring-yellow-700 focus:outline-none">
+                    @error('nim')
+                        <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- NIDN (Dosen) -->
+                <div id="nidn-field" style="display: none;">
+                    <label for="nidn" class="block text-[#C5B358] font-medium mb-1">NIK / NIDN</label>
+                    <input id="nidn" type="text" name="nidn" value="{{ old('nidn') }}"
+                           class="w-full px-4 py-2 rounded bg-[#3a1f1f] border border-gray-600 text-white focus:ring focus:ring-yellow-700 focus:outline-none">
+                    @error('nidn')
                         <p class="text-red-300 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -117,10 +117,29 @@
                     </button>
                 </div>
             </form>
+
             <p class="text-sm text-gray-400 mt-4 text-center">
                 Sudah punya akun? <a href="{{ route('login') }}" class="text-yellow-500 hover:underline">Login sekarang</a>
             </p>
         </div>
     </div>
+
+    <!-- Script for role-based input toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const roleSelect = document.getElementById('role');
+            const nimField = document.getElementById('nim-field');
+            const nidnField = document.getElementById('nidn-field');
+
+            function toggleFields() {
+                const role = roleSelect.value;
+                nimField.style.display = role === 'mahasiswa' ? 'block' : 'none';
+                nidnField.style.display = role === 'dosen' ? 'block' : 'none';
+            }
+
+            roleSelect.addEventListener('change', toggleFields);
+            toggleFields(); // initial load
+        });
+    </script>
 </body>
 </html>
