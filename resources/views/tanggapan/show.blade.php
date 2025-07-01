@@ -8,6 +8,14 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            @php
+                function mask($name) {
+                    $parts = explode(' ', $name);
+                    return implode(' ', array_map(fn($part) =>
+                        mb_substr($part, 0, 1) . str_repeat('*', max(mb_strlen($part) - 1, 0)), $parts));
+                }
+            @endphp
+
             {{-- Card Utama --}}
             <div class="rounded-2xl shadow-lg p-8" style="background-color: #C5B358;">
                 <div class="text-black text-lg space-y-6">
@@ -35,7 +43,6 @@
                         <p>{{ $tanggapan->pengaduan->judul }}</p>
                     </div>
 
-
                     {{-- Bagian --}}
                     <div>
                         <h3 class="font-bold flex items-center gap-2">
@@ -58,7 +65,7 @@
                         <p>{{ $tanggapan->pengaduan->isi_pengaduan }}</p>
                     </div>
 
-                    {{-- Pengaduan Oleh --}}
+                    {{-- Pengaduan Oleh (Anonimkan jika mahasiswa dan bukan pemilik pengaduan) --}}
                     <div>
                         <h3 class="font-bold flex items-center gap-2">
                             <svg class="w-6 h-6 text-yellow-900" fill="currentColor" viewBox="0 0 24 24">
@@ -66,7 +73,14 @@
                             </svg>
                             Pengaduan Oleh
                         </h3>
-                        <p>{{ $tanggapan->pengaduan->user->name ?? '-' }}</p>
+                        <p>
+                            @php
+                                $pengaduUser = $tanggapan->pengaduan->user;
+                                $shouldMask = $pengaduUser->role === 'mahasiswa' && Auth::id() !== $pengaduUser->id;
+                            @endphp
+
+                            {{ $shouldMask ? mask($pengaduUser->name) : $pengaduUser->name }}
+                        </p>
                     </div>
 
                     {{-- Waktu Pengaduan --}}
@@ -80,7 +94,6 @@
                         <p>{{ $tanggapan->pengaduan->created_at->format('d M Y , H:i') }}</p>
                     </div>
 
-
                     {{-- Tanggapan --}}
                     <div>
                         <h3 class="font-bold flex items-center gap-2">
@@ -92,7 +105,7 @@
                         <p class="whitespace-pre-line">{{ $tanggapan->isi_tanggapan }}</p>
                     </div>
 
-                    {{-- Ditanggapi Oleh --}}
+                    {{-- Ditanggapi Oleh (TIDAK anonim) --}}
                     <div>
                         <h3 class="font-bold flex items-center gap-2">
                             <svg class="w-6 h-6 text-yellow-900" fill="currentColor" viewBox="0 0 24 24">

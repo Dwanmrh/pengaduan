@@ -12,6 +12,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- Custom Dropdown Styles -->
+    <style>
+        .custom-dropdown {
+        border-radius: 10px;
+        overflow: hidden;
+        padding: 0;
+    }
+
+        .custom-dropdown a {
+        background-color: #C5B358;
+        color: black;
+        padding: 10px 16px;
+        display: block;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+        .custom-dropdown a:hover {
+        background-color: #a68f3a;
+        color: black;
+    }
+
+        .custom-dropdown a:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+        .custom-dropdown a:last-child {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    </style>
+
+
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -33,7 +68,7 @@
             {{ $slot }}
         </main>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

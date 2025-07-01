@@ -40,7 +40,7 @@
                                     <td class="px-6 py-4">{{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 font-semibold" style="color: #CFB53B;">{{ $mahasiswa->nama }}</td>
                                     <td class="px-6 py-4">{{ $mahasiswa->nim }}</td>
-                                    <td class="px-6 py-4">{{ $mahasiswa->user->email }}</td>
+                                    <td class="px-6 py-4">{{ $mahasiswa->email }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex flex-wrap gap-2">
                                             <a href="{{ route('mahasiswa.edit', $mahasiswa->id) }}"

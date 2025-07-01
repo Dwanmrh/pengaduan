@@ -46,7 +46,7 @@
                                     <td class="px-6 py-4 font-semibold" style="color: #CFB53B;">{{ $dosen->nama }}</td>
                                     <td class="px-6 py-4">{{ $dosen->nidn }}</td>
                                     <td class="px-6 py-4">{{ $dosen->jabatan }}</td>
-                                    <td class="px-6 py-4">{{ $dosen->user->email }}</td>
+                                    <td class="px-6 py-4">{{ $dosen->email }}</td>
                                     @if (Auth::user()->role === 'admin')
                                         <td class="px-6 py-4">
                                             <div class="flex flex-wrap gap-2">

@@ -75,7 +75,7 @@ public function update(Request $request, string $id)
     $mahasiswa->update([
         'nim' => $request->nim,
         'nama' => $request->nama,
-        'email' => $request->nama,
+        'email' => $request->email,
         'jurusan' => $request->jurusan,
     ]);
 
