@@ -17,7 +17,7 @@ class PengaduanController extends Controller
                 ->where('user_id', Auth::id())
                 ->get();
         } else {
-            $pengaduans = Pengaduan::with('tanggapan')->get(); // untuk dosen & admin
+            $pengaduans = Pengaduan::withCount('tanggapan')->get(); // untuk dosen & admin (withCount agar badge jumlah tanggapan tampil)
         }
 
         return view('pengaduan.index', compact('pengaduans'));
@@ -34,6 +34,10 @@ class PengaduanController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role, ['mahasiswa', 'admin'])) {
+            abort(403, 'Hanya mahasiswa dan admin yang dapat membuat pengaduan.');
+        }
+
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi_pengaduan' => 'required',
@@ -57,6 +61,12 @@ class PengaduanController extends Controller
     public function show(string $id)
     {
         $pengaduan = Pengaduan::with('tanggapan')->findOrFail($id);
+
+        // Mahasiswa hanya boleh melihat pengaduan miliknya sendiri
+        if (Auth::user()->role === 'mahasiswa' && Auth::id() !== $pengaduan->user_id) {
+            abort(403);
+        }
+
         return view('pengaduan.show', compact('pengaduan'));
     }
 
@@ -79,6 +89,14 @@ class PengaduanController extends Controller
     public function update(Request $request, string $id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
+
+        // Hanya admin atau mahasiswa pemilik pengaduan yang bisa memperbarui
+        if (
+            !(Auth::user()->role === 'admin' ||
+            (Auth::user()->role === 'mahasiswa' && Auth::id() === $pengaduan->user_id))
+        ) {
+            abort(403);
+        }
 
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -109,9 +127,14 @@ class PengaduanController extends Controller
 
     public function like($id)
     {
-        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::withCount('tanggapan')->findOrFail($id);
         if (Auth::id() !== $pengaduan->user_id) {
             abort(403);
+        }
+
+        // Pengaduan baru bisa ditandai selesai setelah ada tanggapan
+        if ($pengaduan->tanggapan_count === 0) {
+            return redirect()->route('pengaduan.index')->with('error', 'Pengaduan belum ditanggapi, sehingga belum bisa ditandai selesai.');
         }
 
         $pengaduan->status = 'selesai';

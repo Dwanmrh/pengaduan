@@ -44,6 +44,7 @@
                             name="email"
                             id="email"
                             value="{{ old('email', $dosen->email) }}"
+                            @if(Auth::user()->role !== 'admin') readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                         >
                     </div>
@@ -56,6 +57,7 @@
                             name="nidn"
                             id="nidn"
                             value="{{ old('nidn', $dosen->nidn) }}"
+                            @if(Auth::user()->role !== 'admin' && Auth::user()->nidn) readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                         >
                     </div>

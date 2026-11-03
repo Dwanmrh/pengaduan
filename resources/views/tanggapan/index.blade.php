@@ -57,6 +57,7 @@
                                     </td>
                                     @if (in_array(Auth::user()->role, ['admin', 'dosen']))
                                         <td class="px-6 py-4 space-x-2">
+                                        @if (Auth::user()->role === 'admin' || $tanggapan->user_id === Auth::id())
                                             <a href="{{ route('tanggapan.edit', $tanggapan->id) }}"
                                                class="inline-block px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
                                                 Edit
@@ -73,6 +74,9 @@
                                                     Delete
                                                 </button>
                                             </form>
+                                        @else
+                                            <span class="text-gray-500 text-xs">-</span>
+                                        @endif
                                         </td>
                                     @endif
                                 </tr>

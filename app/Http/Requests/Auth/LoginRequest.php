@@ -29,6 +29,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'role' => ['required', 'in:admin,dosen,mahasiswa'],
         ];
     }
 
@@ -41,11 +42,12 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Login hanya berhasil jika email, password, DAN role yang dipilih cocok dengan akun
+        if (! Auth::attempt($this->only('email', 'password', 'role'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email, password, atau role tidak sesuai.',
             ]);
         }
 

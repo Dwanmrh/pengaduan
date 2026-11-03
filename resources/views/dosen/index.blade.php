@@ -10,7 +10,7 @@
 
             {{-- Tombol Tambah + Flash Message --}}
             <div class="flex justify-between items-center px-6">
-                @if (Auth::user()->role === 'admin')
+                @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'dosen' && !$dosens->contains('user_id', Auth::id())))
                     <a href="{{ route('dosen.create') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-white border border-gray-800 dark:border-gray-200 rounded-md font-semibold text-xs text-gray-800 dark:text-gray-800 uppercase tracking-widest hover:bg-gray-100 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150">
                         Add Dosen
                     </a>
@@ -34,7 +34,7 @@
                                 <th class="px-6 py-3">NIK / NIDN</th>
                                 <th class="px-6 py-3">Jabatan</th>
                                 <th class="px-6 py-3">Email</th>
-                                @if (Auth::user()->role === 'admin')
+                                @if (in_array(Auth::user()->role, ['admin', 'dosen']))
                                     <th class="px-6 py-3">Aksi</th>
                                 @endif
                             </tr>
@@ -47,8 +47,9 @@
                                     <td class="px-6 py-4">{{ $dosen->nidn }}</td>
                                     <td class="px-6 py-4">{{ $dosen->jabatan }}</td>
                                     <td class="px-6 py-4">{{ $dosen->email }}</td>
-                                    @if (Auth::user()->role === 'admin')
+                                    @if (in_array(Auth::user()->role, ['admin', 'dosen']))
                                         <td class="px-6 py-4">
+                                            @if (Auth::user()->role === 'admin' || $dosen->user_id === Auth::id())
                                             <div class="flex flex-wrap gap-2">
                                                 <a href="{{ route('dosen.edit', $dosen->id) }}"
                                                    class="inline-block px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
@@ -65,6 +66,9 @@
                                                     </button>
                                                 </form>
                                             </div>
+                                            @else
+                                                <span class="text-gray-500 text-xs">-</span>
+                                            @endif
                                         </td>
                                     @endif
                                 </tr>

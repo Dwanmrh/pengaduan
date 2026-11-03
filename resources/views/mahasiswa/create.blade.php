@@ -33,7 +33,7 @@
                         <input
                             type="text"
                             name="nama"
-                            value="{{ old('nama') }}"
+                            value="{{ old('nama', $akun['nama'] ?? '') }}"
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                             placeholder="Masukkan Nama Mahasiswa"
                             required
@@ -48,7 +48,8 @@
                         <input
                             type="email"
                             name="email"
-                            value="{{ old('email') }}"
+                            value="{{ old('email', $akun['email'] ?? '') }}"
+                            @if(!empty($akun['email'])) readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                             placeholder="Masukkan Email Mahasiswa"
                             required
@@ -63,7 +64,8 @@
                         <input
                             type="text"
                             name="nim"
-                            value="{{ old('nim') }}"
+                            value="{{ old('nim', $akun['nim'] ?? '') }}"
+                            @if(!empty($akun['nim'])) readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                             placeholder="Masukkan NIM"
                             required

@@ -15,6 +15,11 @@
                         {{ session('success') }}
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="text-red-500 text-sm font-semibold px-4 py-2">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
 
             {{-- Tombol Buat Pengaduan --}}
@@ -87,7 +92,7 @@
                                         @endif
 
                                         {{-- Tombol Like/Dislike untuk Mahasiswa --}}
-                                        @if(Auth::user()->role === 'mahasiswa' && Auth::id() === $pengaduan->user_id && $pengaduan->tanggapan)
+                                        @if(Auth::user()->role === 'mahasiswa' && Auth::id() === $pengaduan->user_id && $pengaduan->tanggapan_count > 0)
                                             @if($pengaduan->status === 'selesai')
                                                 <form action="{{ route('pengaduan.dislike', $pengaduan->id) }}"
                                                       method="POST"

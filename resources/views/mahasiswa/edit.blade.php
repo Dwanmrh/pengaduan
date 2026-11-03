@@ -56,6 +56,7 @@
                             name="nim"
                             id="nim"
                             value="{{ old('nim', $mahasiswa->nim) }}"
+                            @if(Auth::user()->role !== 'admin' && Auth::user()->nim) readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                         >
                     </div>
@@ -73,6 +74,7 @@
                             name="email"
                             id="email"
                             value="{{ old('email', $mahasiswa->email) }}"
+                            @if(Auth::user()->role !== 'admin') readonly @endif
                             class="w-full px-3 py-2 rounded-lg border border-black bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#9c8b33]"
                         >
                     </div>

@@ -75,6 +75,12 @@ class TanggapanController extends Controller
     public function show(string $id)
     {
         $tanggapan = Tanggapan::with('pengaduan', 'user')->findOrFail($id);
+
+        // Mahasiswa hanya boleh melihat tanggapan atas pengaduan miliknya
+        if (Auth::user()->role === 'mahasiswa' && Auth::id() !== $tanggapan->pengaduan->user_id) {
+            abort(403);
+        }
+
         return view('tanggapan.show', compact('tanggapan'));
     }
 
@@ -82,8 +88,10 @@ class TanggapanController extends Controller
     {
         $tanggapan = Tanggapan::with('pengaduan')->findOrFail($id);
 
-        if (!in_array(Auth::user()->role, ['admin', 'dosen'])) {
-            abort(403, 'Anda tidak memiliki akses untuk mengedit tanggapan ini.');
+        // Hanya admin, atau dosen yang membuat tanggapan ini
+        if (!(Auth::user()->role === 'admin' ||
+            (Auth::user()->role === 'dosen' && $tanggapan->user_id === Auth::id()))) {
+            abort(403, 'Anda hanya dapat mengedit tanggapan milik Anda sendiri.');
         }
 
         return view('tanggapan.edit', compact('tanggapan'));
@@ -93,8 +101,10 @@ class TanggapanController extends Controller
     {
         $tanggapan = Tanggapan::findOrFail($id);
 
-        if (!in_array(Auth::user()->role, ['admin', 'dosen'])) {
-            abort(403, 'Anda tidak memiliki akses untuk memperbarui tanggapan ini.');
+        // Hanya admin, atau dosen yang membuat tanggapan ini
+        if (!(Auth::user()->role === 'admin' ||
+            (Auth::user()->role === 'dosen' && $tanggapan->user_id === Auth::id()))) {
+            abort(403, 'Anda hanya dapat memperbarui tanggapan milik Anda sendiri.');
         }
 
         $request->validate([
@@ -112,8 +122,10 @@ class TanggapanController extends Controller
     {
         $tanggapan = Tanggapan::findOrFail($id);
 
-        if (!in_array(Auth::user()->role, ['admin', 'dosen'])) {
-            abort(403, 'Anda tidak memiliki akses untuk menghapus tanggapan ini.');
+        // Hanya admin, atau dosen yang membuat tanggapan ini
+        if (!(Auth::user()->role === 'admin' ||
+            (Auth::user()->role === 'dosen' && $tanggapan->user_id === Auth::id()))) {
+            abort(403, 'Anda hanya dapat menghapus tanggapan milik Anda sendiri.');
         }
 
         $pengaduan = $tanggapan->pengaduan;

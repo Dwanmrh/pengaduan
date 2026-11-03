@@ -17,13 +17,13 @@
                     </x-nav-link>
 
                     @auth
-                        @if (Auth::user()->role === 'admin' || Auth::user()->role === 'mahasiswa')
+                        @if (in_array(Auth::user()->role, ['admin', 'mahasiswa', 'dosen']))
                             <x-nav-link :href="route('dosen.index')" :active="request()->routeIs('dosen.index')" class="text-white hover:text-gray-200 font-semibold">
                                 {{ __('Dosen') }}
                             </x-nav-link>
                         @endif
 
-                        @if (Auth::user()->role === 'admin')
+                        @if (in_array(Auth::user()->role, ['admin', 'mahasiswa']))
                             <x-nav-link :href="route('mahasiswa.index')" :active="request()->routeIs('mahasiswa.index')" class="text-white hover:text-gray-200 font-semibold">
                                 {{ __('Mahasiswa') }}
                             </x-nav-link>
@@ -95,9 +95,11 @@
             <x-responsive-nav-link :href="route('dosen.index')" :active="request()->routeIs('dosen')" class="text-white hover:text-gray-200">
                 {{ __('Dosen') }}
             </x-responsive-nav-link>
+            @if (in_array(Auth::user()->role, ['admin', 'mahasiswa']))
             <x-responsive-nav-link :href="route('mahasiswa.index')" :active="request()->routeIs('mahasiswa')" class="text-white hover:text-gray-200">
                 {{ __('Mahasiswa') }}
             </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link :href="route('pengaduan.index')" :active="request()->routeIs('pengaduan')" class="text-white hover:text-gray-200">
                 {{ __('Pengaduan') }}
             </x-responsive-nav-link>

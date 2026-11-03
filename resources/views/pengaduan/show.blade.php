@@ -48,10 +48,12 @@
                             Pengaduan Oleh
                         </h3>
                         @php
-                            function mask($name) {
-                                $parts = explode(' ', $name);
-                                return implode(' ', array_map(fn($part) =>
-                                    mb_substr($part, 0, 1) . str_repeat('*', max(mb_strlen($part) - 1, 0)), $parts));
+                            if (!function_exists('mask')) {
+                                function mask($name) {
+                                    $parts = explode(' ', (string) $name);
+                                    return implode(' ', array_map(fn($part) =>
+                                        mb_substr($part, 0, 1) . str_repeat('*', max(mb_strlen($part) - 1, 0)), $parts));
+                                }
                             }
                         @endphp
                         <p>

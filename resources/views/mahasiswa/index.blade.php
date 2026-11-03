@@ -10,9 +10,13 @@
 
             {{-- Tombol Tambah + Flash Message --}}
             <div class="flex justify-between items-center px-6">
+                @if (Auth::user()->role === 'admin' || (Auth::user()->role === 'mahasiswa' && $mahasiswas->isEmpty()))
                 <a href="{{ route('mahasiswa.create') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-white border border-gray-800 dark:border-gray-200 rounded-md font-semibold text-xs text-gray-800 dark:text-gray-800 uppercase tracking-widest hover:bg-gray-100 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150">
                     Add Mahasiswa
                 </a>
+                @else
+                    <span></span>
+                @endif
 
                 @if (session('success'))
                     <div class="text-green-600 dark:text-green-400 text-sm font-semibold px-4 py-2">

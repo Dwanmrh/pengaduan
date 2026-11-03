@@ -23,11 +23,47 @@ class MahasiswaController extends Controller
 
 public function create()
 {
-    return view('mahasiswa.create'); // semua boleh create
+    $user = Auth::user();
+
+    // Admin bebas menambah data. Mahasiswa hanya untuk dirinya sendiri, satu kali.
+    if ($user->role === 'mahasiswa') {
+        $milikSendiri = Mahasiswa::where('user_id', $user->id)->first();
+        if ($milikSendiri) {
+            return redirect()->route('mahasiswa.edit', $milikSendiri->id)
+                ->with('success', 'Data Anda sudah ada. Silakan perbarui di sini.');
+        }
+
+        $akun = ['nama' => $user->name, 'email' => $user->email, 'nim' => $user->nim];
+        return view('mahasiswa.create', compact('akun'));
+    }
+
+    if ($user->role !== 'admin') {
+        abort(403, 'Anda tidak memiliki akses untuk menambah data mahasiswa.');
+    }
+
+    return view('mahasiswa.create');
 }
 
 public function store(Request $request)
 {
+    $user = Auth::user();
+
+    if (!in_array($user->role, ['admin', 'mahasiswa'])) {
+        abort(403, 'Anda tidak memiliki akses untuk menambah data mahasiswa.');
+    }
+
+    if ($user->role === 'mahasiswa') {
+        if (Mahasiswa::where('user_id', $user->id)->exists()) {
+            abort(403, 'Data mahasiswa Anda sudah ada.');
+        }
+
+        // NIM dan email diambil dari akun yang login, bukan dari input form
+        $request->merge([
+            'nim' => $user->nim ?: $request->nim,
+            'email' => $user->email,
+        ]);
+    }
+
     $request->validate([
         'nim' => 'required|unique:mahasiswas',
         'nama' => 'required|string|max:255',
@@ -63,6 +99,14 @@ public function update(Request $request, string $id)
 
     if (Auth::user()->role !== 'admin' && $mahasiswa->user_id !== Auth::id()) {
         abort(403);
+    }
+
+    // Mahasiswa tidak boleh mengganti NIM/email menjadi milik orang lain
+    if (Auth::user()->role !== 'admin') {
+        $request->merge([
+            'nim' => Auth::user()->nim ?: $request->nim,
+            'email' => Auth::user()->email,
+        ]);
     }
 
     $request->validate([
